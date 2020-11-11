@@ -1,0 +1,32 @@
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/mattn/go-gtk/gtk"
+)
+
+func main() {
+	gtk.Init(&os.Args)
+	window := gtk.NewWindow(gtk.WINDOW_TOPLEVEL)
+	window.SetTitle("GTK Table")
+	window.Connect("destroy", gtk.MainQuit)
+
+	swin := gtk.NewScrolledWindow(nil, nil)
+	swin.SetPolicy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+
+	table := gtk.NewTable(5, 5, false)
+	for y := uint(0); y < 5; y++ {
+		for x := uint(0); x < 5; x++ {
+			table.Attach(gtk.NewLabel(fmt.Sprintf("It's too long %02d:%02d", x, y)), x, x+1, y, y+1, gtk.FILL, gtk.FILL, 5, 5)
+		}
+	}
+	swin.AddWithViewPort(table)
+
+	window.Add(swin)
+	window.SetDefaultSize(500, 300)
+	window.ShowAll()
+
+	gtk.Main()
+}

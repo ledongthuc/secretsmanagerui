@@ -1,0 +1,100 @@
+package view
+
+import (
+	"fmt"
+
+	"github.com/andlabs/ui"
+)
+
+type modelHandler struct {
+	fileName   string
+	state      string
+	url        string
+	buttonText string
+}
+
+func newModelHandler() *modelHandler {
+	m := new(modelHandler)
+	m.fileName = "None"
+	m.buttonText = "Small"
+	return m
+}
+
+func (mh *modelHandler) ColumnTypes(m *ui.TableModel) []ui.TableValue {
+	return []ui.TableValue{
+		ui.TableString(""), // column 0 text
+		ui.TableString(""), // column 1 text
+		ui.TableString(""), // column 2 text
+		ui.TableString(""), // column 2 text
+	}
+}
+
+func (mh *modelHandler) NumRows(m *ui.TableModel) int {
+	return 6
+}
+
+func (mh *modelHandler) CellValue(m *ui.TableModel, row, column int) ui.TableValue {
+	switch column {
+	case 0:
+		return ui.TableString("")
+	case 1:
+		fallthrough
+	case 2:
+		return ui.TableString("")
+	case 3:
+		return ui.TableString("Normal")
+	}
+	panic("unreachable")
+}
+
+func (mh *modelHandler) SetCellValue(m *ui.TableModel, row, column int, value ui.TableValue) {
+	fmt.Println(row, column)
+	if column == 3 {
+		mh.fileName = "ABC"
+	}
+}
+
+func SetupUI() {
+	mainwin := ui.NewWindow("OSS Client", 1000, 1000, true)
+	mainwin.OnClosing(func(*ui.Window) bool {
+		ui.Quit()
+		return true
+	})
+	ui.OnShouldQuit(func() bool {
+		mainwin.Destroy()
+		return true
+	})
+
+	vbox := ui.NewVerticalBox()
+	vbox.SetPadded(true)
+
+	hbox := ui.NewHorizontalBox()
+	hbox.SetPadded(true)
+	vbox.Append(hbox, false)
+	hbox.Append(ui.NewButton("Add New Row Button"), false)
+
+	mainwin.SetChild(vbox)
+
+	mh := newModelHandler()
+	model := ui.NewTableModel(mh)
+
+	table := ui.NewTable(&ui.TableParams{
+		Model:                         model,
+		RowBackgroundColorModelColumn: -1,
+	})
+	vbox.Append(table, false)
+	mainwin.SetChild(vbox)
+	mainwin.SetMargined(true)
+
+	table.AppendTextColumn("File name",
+		0, ui.TableModelColumnNeverEditable, nil)
+
+	table.AppendTextColumn("State", 1, ui.TableModelColumnNeverEditable, nil)
+	table.AppendTextColumn("URL",
+		2, ui.TableModelColumnNeverEditable, nil)
+
+	table.AppendButtonColumn("Image size",
+		3, ui.TableModelColumnAlwaysEditable)
+
+	mainwin.Show()
+}
