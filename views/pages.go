@@ -1,18 +1,21 @@
 package views
 
 import (
+	"github.com/ledongthuc/secretsmanagerui/actions"
 	"github.com/rivo/tview"
 )
 
 type App struct {
+	secretSort actions.SecretSortOption
+
 	app     *tview.Application
 	pages   *tview.Pages
 	secrets *tview.Table
-	// secretSort actions.SecretSort
 }
 
 func (a *App) Init() error {
-	// a.secretSort = actions.SecretSortName
+	a.secretSort = actions.SecretSortNameAsc
+
 	a.pages = a.NewPages()
 	a.app = tview.NewApplication().
 		SetRoot(a.pages, true).

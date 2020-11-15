@@ -1,7 +1,7 @@
 package views
 
 import (
-	"strings"
+	"strconv"
 
 	tcell "github.com/gdamore/tcell/v2"
 	"github.com/ledongthuc/secretsmanagerui/actions"
@@ -10,16 +10,19 @@ import (
 
 func (a *App) NewSecretFilterModal() tview.Primitive {
 	list := tview.NewList()
-	for _, sort := range actions.SecretSortPossibleValues {
-		list = list.AddItem(string(sort), "", rune(strings.ToLower(string(sort))[0]), nil)
+	for index, sort := range actions.SecretSortPossibleValues {
+		sort := sort
+		list = list.AddItem(sort.NiceText, sort.Description, rune(strconv.Itoa(index)[0]), func() {
+			a.secretSort = sort
+			a.secrets.Clear()
+			loadSecretTableHeaders(a.secrets, sort)
+			loadSecretTableData(a.secrets, sort)
+			a.pages.HidePage("secret-filter")
+		})
 	}
 
 	list.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Key() == tcell.KeyESC {
-			a.pages.HidePage("secret-filter")
-			return nil
-		}
-		if event.Key() == tcell.KeyEnter {
 			a.pages.HidePage("secret-filter")
 			return nil
 		}
@@ -30,7 +33,7 @@ func (a *App) NewSecretFilterModal() tview.Primitive {
 		AddItem(nil, 0, 1, false).
 		AddItem(tview.NewFlex().SetDirection(tview.FlexRow).
 			AddItem(nil, 0, 1, false).
-			AddItem(list, 13, 1, true).
+			AddItem(list, 20, 1, true).
 			AddItem(nil, 0, 1, false), 40, 1, true).
 		AddItem(nil, 0, 1, false)
 }
