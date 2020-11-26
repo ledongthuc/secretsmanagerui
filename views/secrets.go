@@ -14,6 +14,11 @@ func (a *App) NewSecretsScreen() tview.Primitive {
 	return a.secrets
 }
 
+func (a *App) ShowSecretsScreen() {
+	a.pages.ShowPage("secret")
+	a.Emit(EventStatusChangeText, "Type S to sort")
+}
+
 func (a *App) NewSecretsTable() *tview.Table {
 	table := tview.NewTable().
 		SetSeparator(tview.Borders.Vertical).
@@ -23,7 +28,7 @@ func (a *App) NewSecretsTable() *tview.Table {
 
 	table.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Key() == tcell.KeyRune && event.Rune() == 's' {
-			a.pages.ShowPage("secret-filter")
+			a.ShowSecretsFilterModal()
 		}
 		return event
 	})

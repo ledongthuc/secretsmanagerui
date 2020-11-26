@@ -17,13 +17,13 @@ func (a *App) NewSecretFilterModal() tview.Primitive {
 			a.secrets.Clear()
 			loadSecretTableHeaders(a.secrets, sort)
 			loadSecretTableData(a.secrets, sort)
-			a.pages.HidePage("secret-filter")
+			a.HideSecretsFilterModal()
 		})
 	}
 
 	list.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Key() == tcell.KeyESC {
-			a.pages.HidePage("secret-filter")
+			a.HideSecretsFilterModal()
 			return nil
 		}
 		return event
@@ -36,4 +36,14 @@ func (a *App) NewSecretFilterModal() tview.Primitive {
 			AddItem(list, 20, 1, true).
 			AddItem(nil, 0, 1, false), 40, 1, true).
 		AddItem(nil, 0, 1, false)
+}
+
+func (a *App) ShowSecretsFilterModal() {
+	a.pages.ShowPage("secret-filter")
+	a.Emit(EventStatusChangeText, "0-9 choose option | ▲ up | ▼ down | esc to close modal")
+}
+
+func (a *App) HideSecretsFilterModal() {
+	a.pages.HidePage("secret-filter")
+	a.ShowSecretsScreen()
 }

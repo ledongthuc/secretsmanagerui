@@ -22,6 +22,7 @@ func (a *App) Init() error {
 	a.app = tview.NewApplication().
 		SetRoot(a.NewTemplate(), true).
 		EnableMouse(true)
+	a.ShowSecretsScreen()
 	return nil
 }
 
@@ -32,7 +33,6 @@ func (a *App) Run() error {
 func (a *App) NewTemplate() tview.Primitive {
 	a.pages = a.NewPages()
 	status := a.NewSecretStatus()
-	a.Emit(EventStatusChangeText, "Type S to sort")
 	flex := tview.NewFlex().SetDirection(tview.FlexRow).
 		AddItem(a.pages, 0, 1, true).
 		AddItem(status, 1, 0, false)
