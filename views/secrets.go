@@ -11,14 +11,7 @@ import (
 
 func (a *App) NewSecretsScreen() tview.Primitive {
 	a.secrets = a.NewSecretsTable()
-	flex := tview.NewFlex().SetDirection(tview.FlexRow).
-		AddItem(a.secrets, 0, 1, true).
-		AddItem(a.NewSecretStatus(), 1, 0, false)
-	return flex
-}
-
-func (a *App) NewSecretStatus() *tview.TextView {
-	return tview.NewTextView().SetText("s: change sorting")
+	return a.secrets
 }
 
 func (a *App) NewSecretsTable() *tview.Table {
