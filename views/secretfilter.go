@@ -16,7 +16,11 @@ func (a *App) NewSecretFilterModal() tview.Primitive {
 			a.secretSort = sort
 			a.secrets.Clear()
 			loadSecretTableHeaders(a.secrets, sort)
-			loadSecretTableData(a.secrets, sort)
+			if secrets, err := actions.GetListSecrets(a.secretSort); err != nil {
+				panic(err)
+			} else {
+				a.Emit(EventSecretsLoaded, secrets)
+			}
 			a.HideSecretsFilterModal()
 		})
 	}
